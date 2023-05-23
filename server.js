@@ -7,7 +7,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 const { connect, connection } = require('mongoose');
 const methodOverride = require('method-override');
-const Log = require('./models/log');
+const logsController = require('./controllers/logsController');
 
 // Database connection
 connect(process.env.MONGO_URI, {
@@ -30,98 +30,23 @@ app.set('views', './views');
 // Middleware
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json())
+
+app.use(methodOverride('_method'));
+
+app.use(express.static("public"));
 // Custom Middleware
 app.use((req, res, next) => {
   console.log('Middleware running...');
   next();
 });
-app.use(methodOverride('_method'));
 
-app.use(express.static("public"));
+// Routes
+app.use("/logs", logsController);
 
-//=======I.N.D.U.C.E.S.=========
-
-// Index
-// app.get('/logs', (req, res) => {
-//   res.send('Index');
-app.get('/logs', async (req, res) => {
-  try {
-    const foundLogs = await Log.find({});
-    res.status(200).render('Index', { logs: foundLogs });
-  } catch (err) {
-    res.status(400).send(err);
-  }
+app.get("/*", (req, res) => {
+  res.redirect("/logs");
 });
 
-// New
-app.get('/logs/new', (req, res) => {
-  res.render('New');
-});
-
-//DELETE
-app.delete('/logs/:id', async (req, res) => {
-  try {
-    await Log.findByIdAndDelete(req.params.id)
-    res.status(200).redirect("/logs")
-  } catch (error) {
-    res.status(400).send(error);
-
-  }
-});
-
-//UPDATE
-app.put('/logs/:id', async (req, res) => {
-  try {
-    req.body.shipIsBroken = req.body.shipIsBroken === 'on';
-    const updatedLog = await Log.findByIdAndUpdate(
-      req.params.id,
-
-      // From Edit form
-      req.body,
-      { new: true }
-    );
-    console.log(updatedlog);
-
-    // Redirect
-    res.redirect(`/logs/${req.params.id}`);
-  } catch (err) {
-    res.status(400).send(err);
-  }
-});
-
-//CREATE
-app.post('/logs', async (req, res) => {
-  try {
-    req.body.shipIsBroken = req.body.shipIsBroken === 'on';
-    const newLog = await Log.create(req.body);
-    console.log(newLog);
-
-    res.redirect(`/logs`);
-
-  } catch (err) {
-    res.status(400).send(err);
-  }
-})
-
-//EDIT
-app.get('/logs/:id/edit', async (req, res) => {
-  try {
-    const foundLog = await Log.findById(req.params.id)
-    res.render('Edit', { log: foundLog })
-  } catch (error) {
-    res.status(400).send(error)
-  }
-})
-
-//SHOW
-app.get('/logs/:id', async (req, res) => {
-  try {
-    const foundLog = await Log.findById(req.params.id)
-    res.render('Show', { log: foundLog })
-  } catch (error) {
-    res.status(400).send(error);
-  }
-})
 
 // Listen
 app.listen(port, () => {
