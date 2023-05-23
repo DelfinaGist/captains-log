@@ -59,6 +59,15 @@ app.get('/logs/new', (req, res) => {
 });
 
 //DELETE
+app.delete('/logs/:id', async (req, res) => {
+  try {
+    await Log.findByIdAndDelete(req.params.id)
+    res.status(200).redirect("/logs")
+  } catch (error) {
+    res.status(400).send(error);
+
+  }
+});
 
 //UPDATE
 // app.put('/:id', async (req, res) => {
@@ -95,6 +104,14 @@ app.post('/logs', async (req, res) => {
 })
 
 //EDIT
+app.get('/logs/:id/edit', async (req, res) => {
+  try {
+    const foundLog = await Log.findById(req.params.id)
+    res.render('Edit', { log: foundLog })
+  } catch (error) {
+    res.status(400).send(error)
+  }
+})
 
 //SHOW
 app.get('/logs/:id', async (req, res) => {
