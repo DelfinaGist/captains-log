@@ -70,24 +70,24 @@ app.delete('/logs/:id', async (req, res) => {
 });
 
 //UPDATE
-// app.put('/:id', async (req, res) => {
-//     try {
-//       req.body.shipIsBroken = req.body.shipIsBroken === 'on';
-//       const updatedLog = await Log.findByIdAndUpdate(
-//         req.params.id,
+app.put('/logs/:id', async (req, res) => {
+  try {
+    req.body.shipIsBroken = req.body.shipIsBroken === 'on';
+    const updatedLog = await Log.findByIdAndUpdate(
+      req.params.id,
 
-//         // From Edit form
-//         req.body,
-//         { new: true }
-//       );
-//       console.log(updatedFruit);
+      // From Edit form
+      req.body,
+      { new: true }
+    );
+    console.log(updatedlog);
 
-//       // Redirect
-//       res.redirect(`/fruits/${req.params.id}`);
-//     } catch (err) {
-//       res.status(400).send(err);
-//     }
-//   });
+    // Redirect
+    res.redirect(`/logs/${req.params.id}`);
+  } catch (err) {
+    res.status(400).send(err);
+  }
+});
 
 //CREATE
 app.post('/logs', async (req, res) => {
