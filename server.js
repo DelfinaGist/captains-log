@@ -87,7 +87,8 @@ app.post('/logs', async (req, res) => {
     const newLog = await Log.create(req.body);
     console.log(newLog);
 
-    res.redirect(`/logs/${newLog._id}`);
+    res.redirect(`/logs`);
+
   } catch (err) {
     res.status(400).send(err);
   }
@@ -96,6 +97,14 @@ app.post('/logs', async (req, res) => {
 //EDIT
 
 //SHOW
+app.get('/logs/:id', async (req, res) => {
+  try {
+    const foundLog = await Log.findById(req.params.id)
+    res.render('Show', { log: foundLog })
+  } catch (error) {
+    res.status(400).send(error);
+  }
+})
 
 // Listen
 app.listen(port, () => {

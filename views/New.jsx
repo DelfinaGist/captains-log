@@ -1,4 +1,4 @@
-import React from "react";
+const React = require("react");
 
 class New extends React.Component {
   render() {
@@ -26,4 +26,4 @@ class New extends React.Component {
   }
 }
 
-export default New;
+module.exports = New;
